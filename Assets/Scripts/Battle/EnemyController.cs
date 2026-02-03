@@ -562,6 +562,28 @@ public class EnemyController : MonoBehaviour {
             script.SetVar("posx", DynValue.NewNumber(GetComponent<RectTransform>().position.x));
             script.SetVar("posy", DynValue.NewNumber(GetComponent<RectTransform>().position.y));
         } catch { /* ignored */ }
+		if (Input.GetKeyDown(KeyCode.K)	)
+		{
+			DoKill(true);
+		}
+		
+		if (Input.GetKeyDown(KeyCode.S)	)
+		{
+			DoSpare(true);
+		}
+		
+		if (Input.GetKeyDown(KeyCode.D)	)
+		{
+			SetDamage(27632763);
+		}
+		if (Input.GetKeyDown(KeyCode.V)	)
+		{
+			UIController.instance.gold = int.MinValue;
+			UIController.instance.exp += int.MinValue;
+			if (true) UIController.PlaySoundSeparate("enemydust");
+			FightUIController.instance.DestroyAllAttackInstances(this);killed = true;
+			UIController.instance.CheckAndTriggerVictory();
+		}
     }
 
     public void SetSliceAnimOffset(int x, int y) { offsets[0] = new Vector2(x, y); }

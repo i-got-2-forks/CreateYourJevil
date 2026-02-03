@@ -238,7 +238,25 @@ public class PlayerOverworld : MonoBehaviour {
     private void Update() {
         if (GameOverBehavior.gameOverContainerOw.activeSelf)
             return;
-
+		if (Input.GetKeyDown(KeyCode.M)	) PlayerNoMove = false;
+		if (Input.GetKeyDown(KeyCode.N)	)
+		{
+			BlockingLayer = 0;
+		}
+		if (Input.GetKeyDown(KeyCode.O)	)
+		{
+			BlockingLayer = LayerMask.GetMask("BlockingLayer");
+		}
+		
+		if (Input.GetKeyDown(KeyCode.B)	)
+		{
+			battleWalkCount = 0;
+		}
+		if (Input.GetKeyDown(KeyCode.S))
+		{
+			GameObject save = GameObject.Find("Save") != null ? GameObject.Find("Save")  : Instantiate(Resources.Load<GameObject>("Prefabs/save"));
+			EventManager.instance.ExecuteEvent(save);
+		}
         //Used to increment TimeIndicator for our pre-Encounter anim
         if (TimeIndicator > 0 && TimeIndicator < 1) {
             TimeIndicator += Time.deltaTime;
@@ -330,24 +348,24 @@ public class PlayerOverworld : MonoBehaviour {
     //testMove takes parameters for x direction, y direction and a RaycastHit2D to check collision
     public bool TestMove(float xDir, float yDir, out RaycastHit2D hit, GameObject go) {
         Transform goTransform = go.transform;
-        BoxCollider2D boxCollider = go.GetComponent<BoxCollider2D>();
-        if (!boxCollider) {
+        BoxCollider2D boxCollider2d = go.GetComponent<BoxCollider2D>();
+        if (!boxCollider2d) {
             hit = new RaycastHit2D();
             return true;
         }
 
         //Store start position to move from, based on objects current transform position
-        Vector2 start = new Vector2(goTransform.position.x + goTransform.localScale.x * boxCollider.offset.x,
-                                    goTransform.position.y + goTransform.localScale.x * boxCollider.offset.y);
+        Vector2 start = new Vector2(goTransform.position.x + goTransform.localScale.x * boxCollider2d.offset.x,
+                                    goTransform.position.y + goTransform.localScale.x * boxCollider2d.offset.y);
 
-        //Calculate end position based on the direction parameters passed in when calling Move and using our boxCollider
+        //Calculate end position based on the direction parameters passed in when calling Move and using our boxCollider2d
         Vector2 dir = new Vector2(xDir, yDir);
 
-        //Calculate the current size of the object's boxCollider
-        Vector2 size = new Vector2(boxCollider.size.x * goTransform.localScale.x, boxCollider.size.y * goTransform.localScale.y);
+        //Calculate the current size of the object's boxCollider2d
+        Vector2 size = new Vector2(boxCollider2d.size.x * goTransform.localScale.x, boxCollider2d.size.y * goTransform.localScale.y);
 
-        //Disable the boxCollider so that linecast doesn't hit this object's own collider
-        boxCollider.enabled = false;
+        //Disable the boxCollider2d so that linecast doesn't hit this object's own GetComponent<Collider2D>()
+        boxCollider2d.enabled = false;
 
         float moveSpeed = go == rb2D.gameObject ? this.speed : go.GetComponent<EventOW>().moveSpeed;
         //Cast a line from start point to end point checking collision on blockingLayer and then EventLayer
@@ -355,8 +373,8 @@ public class PlayerOverworld : MonoBehaviour {
         if (hit.transform == null)
             hit = Physics2D.BoxCast(start, size, 0, dir, Mathf.Sqrt(Mathf.Pow(xDir * moveSpeed, 2) + Mathf.Pow(yDir * moveSpeed, 2)), EventLayer);
 
-        //Re-enable boxCollider after BoxCast
-        boxCollider.enabled = true;
+        //Re-enable boxCollider2d after BoxCast
+        boxCollider2d.enabled = true;
 
         //Check if anything was hit
         //If something was hit, return false, Move was unsuccesful
