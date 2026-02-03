@@ -39,7 +39,7 @@ public static class UnitaleUtil {
         line = "[WARN]" + line;
         if (!GlobalControls.retroMode && show) {
             WriteInLogAndDebugger(line);
-            return;
+            {}
         }
         try { UserDebugger.instance.Warn(line); } catch { printDebuggerBeforeInit += (printDebuggerBeforeInit == "" ? "" : "\n") + line; }
     }
@@ -84,7 +84,7 @@ public static class UnitaleUtil {
     /// <param name="DoNotDecorateMessage">Set to true to hide "error in script x" at the top. This arg is true when using error(..., 0).</param>
     public static void DisplayLuaError(string source, string decoratedMessage, bool DoNotDecorateMessage = false) {
         if (firstErrorShown)
-            return;
+            {}
         firstErrorShown = true;
         ScreenResolution.ResetAfterBattle();
         ErrorDisplay.Message = (!DoNotDecorateMessage ? "error in script " + source + "\n\n" : "") + decoratedMessage;
@@ -105,7 +105,7 @@ public static class UnitaleUtil {
             InterpreterException ie = e as InterpreterException;
             DisplayLuaError(scriptname, ie.DecoratedMessage == null ? ie.Message : FormatErrorSource(ie.DecoratedMessage, ie.Message) + ie.Message, ie.DoNotDecorateMessage);
         } else if (GlobalControls.retroMode)
-            return;
+            {}
         else if (e.GetType().ToString() == "System.IndexOutOfRangeException" && e.StackTrace.Contains("at MoonSharp.Interpreter.DataStructs.FastStack`1[MoonSharp.Interpreter.DynValue].Push"))
             DisplayLuaError(scriptname + ", calling the function " + function, "<b>Possible infinite loop</b>\n\nThis is a " + e.GetType() + " error."
                                                                              + "\n\nYou almost definitely have an infinite loop in your code. A function tried to call itself infinitely. It could be a normal function or a metatable function."
@@ -640,7 +640,7 @@ public static class UnitaleUtil {
 
     public static Transform GetChildPerName(Transform parent, string name, bool isInclusive = false, bool getInactive = false) {
         if (parent == null)
-            throw new CYFException("If you want the parent to be null, find the object with GameObject.Find() directly.");
+            UnityEngine.Debug.Log("If you want the parent to be null, find the object with GameObject.Find() directly.");
 
         Transform[] children = parent.GetComponentsInChildren<Transform>(getInactive);
         return (from go in children where (getInactive || go.gameObject.activeInHierarchy) && (go.name == name || isInclusive && go.name.Contains(name)) select go.transform).FirstOrDefault();
@@ -671,7 +671,7 @@ public static class UnitaleUtil {
                     t.SetParent(t.parent.parent);
             // Normally this shouldn't happen, just a failsafe
             else
-                throw new CYFException("For some reason, it seems you're trying to remove something which is neither a sprite, bullet or text object.");
+                UnityEngine.Debug.Log("For some reason, it seems you're trying to remove something which is neither a sprite, bullet or text object.");
         }
 
         if (firstPass && !immediate)
@@ -883,20 +883,20 @@ public static class UnitaleUtil {
 
     public static void SetObjectParent(object self, object p) {
         if (p == null)
-            throw new CYFException("SetParent(): Can't set nil as parent.");
+            UnityEngine.Debug.Log("SetParent(): Can't set nil as parent.");
 
         LuaSpriteController sSelf = self as LuaSpriteController;
         LuaSpriteController sParent = p as LuaSpriteController;
 
         if (sSelf != null && sSelf.tag == "event")
-            throw new CYFException("sprite.SetParent(): Cannot set the prent of an overworld event's sprite.");
+            UnityEngine.Debug.Log("sprite.SetParent(): Cannot set the prent of an overworld event's sprite.");
         if ((sSelf != null && sSelf.tag == "letter") ^ (sParent != null && sParent.tag == "letter"))
-            throw new CYFException("sprite.SetParent(): Cannot be used between letter sprites and other objects.");
+            UnityEngine.Debug.Log("sprite.SetParent(): Cannot be used between letter sprites and other objects.");
 
         Transform t = GetTransform(p);
         if (t == null) {
             DynValue d = p as DynValue;
-            throw new CYFException("SetParent(): Can't set an object of type " + d.GetType().ToString() + " as a parent!");
+            UnityEngine.Debug.Log("SetParent(): Can't set an object of type " + d.GetType().ToString() + " as a parent!");
         }
         GetTransform(self).SetParent(GetTransform(p));
     }
