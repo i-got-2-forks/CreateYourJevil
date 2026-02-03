@@ -39,7 +39,7 @@ public static class UnitaleUtil {
         line = "[WARN]" + line;
         if (!GlobalControls.retroMode && show) {
             WriteInLogAndDebugger(line);
-            {}
+            //return;
         }
         try { UserDebugger.instance.Warn(line); } catch { printDebuggerBeforeInit += (printDebuggerBeforeInit == "" ? "" : "\n") + line; }
     }
@@ -68,13 +68,26 @@ public static class UnitaleUtil {
 
     public static bool IsOverworld {
         get {
-            if (SceneManager.GetActiveScene().name == "TransitionOverworld")
-                return true;
-            if (GlobalControls.nonOWScenes.Contains(SceneManager.GetActiveScene().name))
-                return false;
-            return !GlobalControls.isInFight;
+			if (IsNormal)
+			{
+				if (SceneManager.GetActiveScene().name == "TransitionOverworld")
+					return true;
+				if (GlobalControls.nonOWScenes.Contains(SceneManager.GetActiveScene().name))
+					return false;
+				return !GlobalControls.isInFight;
+			}
+			else
+			{
+				if (GlobalControls.isInFight)
+				{
+					return true;
+				}
+				return false;
+			}
         }
     }
+	
+	public static bool IsNormal = true;
 
     /// <summary>
     /// Loads the Error scene with the Lua error that occurred.
@@ -84,12 +97,12 @@ public static class UnitaleUtil {
     /// <param name="DoNotDecorateMessage">Set to true to hide "error in script x" at the top. This arg is true when using error(..., 0).</param>
     public static void DisplayLuaError(string source, string decoratedMessage, bool DoNotDecorateMessage = false) {
         if (firstErrorShown)
-            {}
+            return;
         firstErrorShown = true;
         ScreenResolution.ResetAfterBattle();
         ErrorDisplay.Message = (!DoNotDecorateMessage ? "error in script " + source + "\n\n" : "") + decoratedMessage;
-        if (Application.isEditor) SceneManager.LoadSceneAsync("Error"); // prevents editor from crashing
-        else                      SceneManager.LoadScene("Error");
+        if (Application.isEditor) SceneManager.LoadSceneAsync("Error", LoadSceneMode.Additive); // prevents editor from crashing
+        else                      SceneManager.LoadScene("Error", LoadSceneMode.Additive);
         Debug.Log("It's a Lua error! : " + ErrorDisplay.Message);
         ScreenResolution.wideFullscreen = true;
     }
@@ -104,8 +117,8 @@ public static class UnitaleUtil {
         if (e as InterpreterException != null) {
             InterpreterException ie = e as InterpreterException;
             DisplayLuaError(scriptname, ie.DecoratedMessage == null ? ie.Message : FormatErrorSource(ie.DecoratedMessage, ie.Message) + ie.Message, ie.DoNotDecorateMessage);
-        } else if (GlobalControls.retroMode)
-            {}
+        } //else if (GlobalControls.retroMode)
+            //return;
         else if (e.GetType().ToString() == "System.IndexOutOfRangeException" && e.StackTrace.Contains("at MoonSharp.Interpreter.DataStructs.FastStack`1[MoonSharp.Interpreter.DynValue].Push"))
             DisplayLuaError(scriptname + ", calling the function " + function, "<b>Possible infinite loop</b>\n\nThis is a " + e.GetType() + " error."
                                                                              + "\n\nYou almost definitely have an infinite loop in your code. A function tried to call itself infinitely. It could be a normal function or a metatable function."

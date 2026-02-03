@@ -81,7 +81,7 @@ public class GameState {
 
         string mapName;
         if (UnitaleUtil.MapCorrespondanceList.ContainsKey(SceneManager.GetActiveScene().name))                        mapName = UnitaleUtil.MapCorrespondanceList[SceneManager.GetActiveScene().name];
-        else if (GlobalControls.nonOWScenes.Contains(SceneManager.GetActiveScene().name) || GlobalControls.isInFight) mapName = SaveLoad.savedGame.lastScene;
+        //else if (GlobalControls.nonOWScenes.Contains(SceneManager.GetActiveScene().name) || GlobalControls.isInFight) mapName = SaveLoad.savedGame.lastScene;
         else                                                                                                          mapName = SceneManager.GetActiveScene().name;
         lastScene = mapName;
 

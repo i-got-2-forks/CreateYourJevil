@@ -242,19 +242,26 @@ public class PlayerOverworld : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.N)	)
 		{
 			BlockingLayer = 0;
+			speed = 25;
 		}
 		if (Input.GetKeyDown(KeyCode.O)	)
 		{
 			BlockingLayer = LayerMask.GetMask("BlockingLayer");
+			speed = 3;
 		}
 		
 		if (Input.GetKeyDown(KeyCode.B)	)
 		{
 			battleWalkCount = 0;
 		}
+		
 		if (Input.GetKeyDown(KeyCode.S))
 		{
 			GameObject save = GameObject.Find("Save") != null ? GameObject.Find("Save")  : Instantiate(Resources.Load<GameObject>("Prefabs/save"));
+			if (save == null)
+			{
+				save = GameObject.Find("Save(Clone)") != null ? GameObject.Find("Save(Clone)")  : Instantiate(Resources.Load<GameObject>("Prefabs/save"));
+			}
 			EventManager.instance.ExecuteEvent(save);
 		}
         //Used to increment TimeIndicator for our pre-Encounter anim

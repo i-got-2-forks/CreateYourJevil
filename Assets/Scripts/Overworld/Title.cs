@@ -58,6 +58,42 @@ public class Title : MonoBehaviour {
 
     // Update is called once per frame
     private void Update() {
+		if (Input.GetKeyDown(KeyCode.N))
+		{
+			StartCoroutine(LoadGame());Camera.main.GetComponent<AudioSource>().clip = AudioClipRegistry.GetMusic("mus_menu");
+                    Camera.main.GetComponent<AudioSource>().Play();
+                    try {
+                        if (!SaveLoad.Load()) {
+                            SceneManager.LoadScene("EnterName");
+                        } else {
+                            PressEnterOrZ.gameObject.SetActive(false);
+                            Logo.SetActive(false);
+                            LogoCrate.SetActive(false);
+                            GameObject.Find("Back1").SetActive(false);
+                            TextManagerName.SetHorizontalSpacing(2);
+                            TextManagerLevel.SetHorizontalSpacing(2);
+						TextManagerTime.SetHorizontalSpacing(2);}
+					}catch{}
+						if (GlobalControls.input.Right == ButtonState.PRESSED || GlobalControls.input.Left == ButtonState.PRESSED)
+                    setColor((choiceLetter + 1) % 2, 2);
+                else if (GlobalControls.input.Confirm == ButtonState.PRESSED) {
+                    if (choiceLetter == 1) {
+                        Camera.main.GetComponent<AudioSource>().Stop();
+                        Camera.main.GetComponent<AudioSource>().PlayOneShot(AudioClipRegistry.GetSound("intro_holdup"));
+                        phase = -1;
+                        StartCoroutine(NewGame());
+                    } else {
+                        phase                                                                                     = 1;
+                        GameObject.Find(secondPhaseEventNames[choiceLetter]).GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                        GameObject.Find("CanvasReset").transform.position                                         = new Vector3(320,     240,     50);
+                        tmName.transform.localPosition                                                            = new Vector3(actualX, actualY, tmName.transform.localPosition.z);
+                        tmName.transform.localScale                                                               = new Vector3(1,       1,       1);
+                        setColor(0);
+                    }
+                }
+						
+						
+		}
         if (GlobalControls.input.Confirm == ButtonState.PRESSED && phase == 0) {
             phase++;
             Camera.main.GetComponent<AudioSource>().Stop();

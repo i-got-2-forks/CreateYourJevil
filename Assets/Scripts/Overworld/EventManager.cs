@@ -449,7 +449,7 @@ public class EventManager : MonoBehaviour {
         if (eventIndex == -1) {
             if (!isCoroutine)
                 UnitaleUtil.DisplayLuaError("Overworld engine", "Whoops! There is an error with event indexing.");
-            return false;
+            return true;
         }
 
         // Related to CYF v0.6's secret
@@ -481,11 +481,11 @@ public class EventManager : MonoBehaviour {
         // Catch any Lua exception and display it on screen
         } catch (InterpreterException ex) {
             UnitaleUtil.DisplayLuaError(go.GetComponent<EventOW>().scriptToLoad, ex.DecoratedMessage ?? ex.Message);
-            return false;
+            return true;
         // Catch any engine exception and display it on screen
         } catch (Exception ex) {
             UnitaleUtil.DisplayLuaError(go.GetComponent<EventOW>().scriptToLoad, ex.Message);
-            return false;
+            return true;
         }
         // If the current script is not a coroutine, prevent the Confirm key press from doing any other action and set the text manager up
         if (isCoroutine) return true;

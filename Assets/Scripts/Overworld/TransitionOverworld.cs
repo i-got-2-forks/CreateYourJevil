@@ -84,7 +84,6 @@ public class TransitionOverworld : MonoBehaviour {
         }
         if (GlobalControls.nonOWScenes.Contains(mapName)) {
             UnitaleUtil.DisplayLuaError("TransitionOverworld", "Sorry, but \"" + mapName + "\" is not the name of an overworld scene.");
-            return;
         }
         SceneManager.LoadScene(mapName);
         GameObject.Find("Don't show it again").GetComponent<Image>().color = new Color(0, 0, 0, 0);

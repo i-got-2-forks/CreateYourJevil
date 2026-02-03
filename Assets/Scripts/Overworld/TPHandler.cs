@@ -55,11 +55,9 @@ public class TPHandler : MonoBehaviour {
 
         if (!FileLoader.SceneExists(sceneName)) {
             UnitaleUtil.DisplayLuaError("Teleportation script", "The map named \"" + sceneName + "\" doesn't exist.");
-            yield break;
         }
         if (GlobalControls.nonOWScenes.Contains(sceneName)) {
             UnitaleUtil.DisplayLuaError("Teleportation script", "Sorry, but \"" + sceneName + "\" is not the name of an overworld scene.");
-            yield break;
         }
         SceneManager.LoadScene(sceneName);
         StartCoroutine(TransitionOverworld.GetIntoDaMap("tphandler", new object[] { position, this }));

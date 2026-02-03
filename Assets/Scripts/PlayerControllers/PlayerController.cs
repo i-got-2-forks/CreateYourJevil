@@ -388,11 +388,19 @@ public class PlayerController : MonoBehaviour {
     /// </summary>
     private void Update() {
         // DEBUG CONTROLS
-        /*if (Input.GetKeyDown(KeyCode.Alpha1))
-            SetSoul(new RedSoul(this));
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            SetSoul(new RedSoul());
         else if (Input.GetKeyDown(KeyCode.Alpha2))
-            SetSoul(new BlueSoul(this));*/
+            SetSoul(new BlueSoul());
+		
+        if (Input.GetKeyDown(KeyCode.C))
+            overrideControl = !overrideControl;
+        if (Input.GetKeyDown(KeyCode.N))
+            arenaBounds = GameObject.Find("Background").GetComponent<RectTransform>();
+        if (Input.GetKeyDown(KeyCode.O))
+            arenaBounds = GameObject.Find("arena_container").GetComponent<RectTransform>();
         // END DEBUG CONTROLS
+		
         /*
         if (!ArenaManager.instance.needsInit && (tempQueue.x != -5000 || tempQueue.y != -5000)) {
             SetPosition(tempQueue.x, tempQueue.y, tempQueue2);
@@ -412,7 +420,7 @@ public class PlayerController : MonoBehaviour {
         }
 
         // if the invulnerability timer has more than 0 seconds (usually when you get hurt), blink to reflect the hurt state
-        if (invulTimer > 0.0f) {
+        if (invulTimer > 0.0f || Input.GetKeyDown(KeyCode.I)) {
             invulTimer -= Time.deltaTime;
             selfImg.enabled = !(invulTimer % BLINK_CYCLE_SECONDS > BLINK_CYCLE_SECONDS / 2.0f) || invulTimer <= 0.0f;
         }

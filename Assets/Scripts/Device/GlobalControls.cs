@@ -170,6 +170,17 @@ public class GlobalControls : MonoBehaviour {
                 else                                                      UIController.EndBattle();
             else                                                          UIController.EndBattle();
         }
+		
+		 else if (Input.GetKeyDown(KeyCode.Alpha5)) {
+			 UnitaleUtil.IsNormal = !UnitaleUtil.IsNormal;
+           SaveLoad.Save(false);
+        }
+		else if (Input.GetKeyDown(KeyCode.M))
+		{
+			Destroy(GameObject.Find("FadingBlack"));
+                StartCoroutine(PlayerOverworld.LaunchMenu());
+        }
+		
         // Open the Menu in the Overworld
         else if (input.Menu == ButtonState.PRESSED && !nonOWScenes.Contains(sceneName) && !isInFight && !isInShop && (!GameOverBehavior.gameOverContainerOw || !GameOverBehavior.gameOverContainerOw.activeInHierarchy)) {
             if (!PlayerOverworld.instance.PlayerNoMove && EventManager.instance.script == null && !PlayerOverworld.instance.menuRunning[2] && !PlayerOverworld.instance.menuRunning[4] && (GameObject.Find("FadingBlack") == null || GameObject.Find("FadingBlack").GetComponent<Fading>().alpha <= 0))
