@@ -53,6 +53,10 @@ public class EnterNameScript : MonoBehaviour {
 
     // Update is called once per frame
     private void Update() {
+		if (Input.GetKeyDown(KeyCode.C)
+		{
+			StartCoroutine(waitConfirmDbg());
+		}
         if (confirm) return;
         if (!hackFirstString && tmName.transform.childCount != 0 && !isNewGame) {
             hackFirstString = true;
@@ -98,7 +102,8 @@ public class EnterNameScript : MonoBehaviour {
                 case "D":
                 case "E":         setColor("Backspace");          break;
                 case "F":
-                case "G":         setColor("Done");               break;
+                case "G":  
+				setColor("Done");               break;
                 default:          setColor(choiceLetter[0] - 7);  break;
             }
         } else if (GlobalControls.input.Right == ButtonState.PRESSED) {
@@ -192,6 +197,71 @@ public class EnterNameScript : MonoBehaviour {
     private IEnumerator waitConfirm(bool isForbidden = false) {
         yield return 0;
         tmInstr.SetTextQueue(new[] { new TextMessage((confirmText ?? (GlobalControls.crate ? "LAL GUD???" : "Is this name correct?")), false, true) });
+        tmName.SetEffect(new ShakeEffect(tmName));
+        GameObject.Find("Backspace").GetComponent<SpriteRenderer>().enabled = false;
+        tmLettersMaj.gameObject.SetActive(false);
+        tmLettersMin.gameObject.SetActive(false);
+        setColor("Quit");
+        GameObject.Find("Done").GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, isForbidden ? 0 : 1);
+        float diff = calcTotalLength(tmName)*2;
+        float actualX = tmName.transform.localPosition.x, actualY = tmName.transform.localPosition.y;
+        while (GlobalControls.input.Confirm != ButtonState.PRESSED) {
+            if (tmName.transform.localScale.x < 3) {
+                float scale = Mathf.Min(3, tmName.transform.localScale.x + 0.01f);
+                tmName.transform.localScale = new Vector3(scale, scale, 1);
+                tmName.MoveTo(actualX - (tmName.transform.localScale.x - 1) * diff / 2, actualY - (tmName.transform.localScale.x - 1) * diff / 6);
+            }
+            if ((GlobalControls.input.Left == ButtonState.PRESSED || GlobalControls.input.Right == ButtonState.PRESSED)
+                    && GameObject.Find("Done").GetComponent<SpriteRenderer>().enabled &&!isForbidden) {
+                setColor(choiceLetter == "Quit" ? "Done": "Quit");
+                uiAudio.PlayOneShot(AudioClipRegistry.GetSound("menumove"));
+            }
+            yield return 0;
+        }
+        uiAudio.PlayOneShot(AudioClipRegistry.GetSound("menuconfirm"));
+        if (choiceLetter == "Quit") {
+            textObjFolder.SetActive(true);
+            confirmText = null;
+            confirm = false;
+            tmName.transform.localScale = new Vector3(1, 1, 1);
+            tmName.SetEffect(null);
+            tmName.SetTextQueue(new[] { new TextMessage(playerName, false, true) });
+            tmName.MoveTo(-calcTotalLength(tmName)/2, 145);
+            tmInstr.SetTextQueue(new[] { new TextMessage((GlobalControls.crate ? "QWIK QWIK QWIK!!!" : "Name the fallen human."), false, true) });
+            tmLettersMaj.gameObject.SetActive(true);
+            tmLettersMin.gameObject.SetActive(true);
+            GameObject.Find("Backspace").GetComponent<SpriteRenderer>().enabled = true;
+            setColor("Done");
+        } else {
+            PlayerCharacter.instance.Name = playerName;
+            if (isNewGame) {
+                GameObject.Find("Main Camera").GetComponent<AudioSource>().Stop();
+                GameObject.Find("Main Camera").GetComponent<AudioSource>().PlayOneShot(AudioClipRegistry.GetSound("intro_holdup"));
+                SpriteRenderer blank = GameObject.Find("Blank").GetComponent<SpriteRenderer>();
+                while (blank.color.a <= 1) {
+                    if (tmName.transform.localScale.x < 3) {
+                        float scale = Mathf.Min(3, tmName.transform.localScale.x + 0.01f);
+                        tmName.transform.localScale = new Vector3(scale, scale, 1);
+                        tmName.MoveTo(actualX - (tmName.transform.localScale.x - 1f) * diff / 2f, actualY - (tmName.transform.localScale.x - 1f) * diff / 6);
+                    }
+                    blank.color = new Color(blank.color.r, blank.color.g, blank.color.b, blank.color.a + 0.003f);
+                    yield return 0;
+                }
+                while (GameObject.Find("Main Camera").GetComponent<AudioSource>().isPlaying)
+                    yield return 0;
+                UnitaleUtil.ResetOW();
+                SceneManager.LoadScene("TransitionOverworld");
+                DiscordControls.StartOW();
+            } else {
+                SaveLoad.Save();
+                SceneManager.LoadScene("TitleScreen");
+            }
+        }
+    }
+	
+	private IEnumerator waitConfirmDbg(bool isForbidden = false) {
+        yield return 0;
+        tmInstr.SetTextQueue(new[] { new TextMessage((confirmText ?? (GlobalControls.crate ? "LAL GUD???" : "Is this name correct? (DEBUG)")), false, true) });
         tmName.SetEffect(new ShakeEffect(tmName));
         GameObject.Find("Backspace").GetComponent<SpriteRenderer>().enabled = false;
         tmLettersMaj.gameObject.SetActive(false);

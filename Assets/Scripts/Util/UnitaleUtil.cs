@@ -88,18 +88,10 @@ public static class UnitaleUtil {
         firstErrorShown = true;
         ScreenResolution.ResetAfterBattle();
         ErrorDisplay.Message = (!DoNotDecorateMessage ? "error in script " + source + "\n\n" : "") + decoratedMessage;
-		
-		if (GlobalControls.throwErrors)
-		{
-			if (Application.isEditor) SceneManager.LoadSceneAsync("Error"); // prevents editor from crashing
-			else                      SceneManager.LoadScene("Error");
-			Debug.Log("It's a Lua error! : " + ErrorDisplay.Message);
-			ScreenResolution.wideFullscreen = true;
-		}
-		else
-		{
-			Debug.Log("Error dodged : " + ErrorDisplay.Message);
-		}
+        if (Application.isEditor) SceneManager.LoadSceneAsync("Error"); // prevents editor from crashing
+        else                      SceneManager.LoadScene("Error");
+        Debug.Log("It's a Lua error! : " + ErrorDisplay.Message);
+        ScreenResolution.wideFullscreen = true;
     }
 
     /// <summary>

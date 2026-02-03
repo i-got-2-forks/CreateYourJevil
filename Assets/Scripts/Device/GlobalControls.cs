@@ -9,9 +9,9 @@ using MoonSharp.Interpreter;
 /// Controls that should be active on all screens. Pretty much a hack to allow people to reset. Now it's more useful.
 /// </summary>
 public class GlobalControls : MonoBehaviour {
-    public static string CYFversion       = "0.6.6";    // Current version of CYF displayed in the main menu and usable in scripts
-    public static string OverworldVersion = "0.6.6";    // Last version in which the overworld was changed, notifying any user with an old save to delete it
-    public static int    LTSversion       = 4;          // LTS version, mainly used for CYF 0.6.6
+    public static string CYFversion       = "1.0";    // Current version of CYF displayed in the main menu and usable in scripts
+    public static string OverworldVersion = "1.0";    // Last version in which the overworld was changed, notifying any user with an old save to delete it
+    public static int    LTSversion       = 0;          // LTS version, mainly used for CYF 0.6.6
     public static int    BetaVersion      = 0;          // Only used for beta versions
 
     public static int frame;                        // Frame counter used for logging purposes
@@ -38,36 +38,6 @@ public class GlobalControls : MonoBehaviour {
     public static Dictionary<string, GameState.TempMapData> TempGameMapData = new Dictionary<string, GameState.TempMapData>();  // Data used to save changes applied to maps the Player hasn't visited yet
 
     private static bool awakened;   // Used to only run Awake() once
-	
-	public string _NS_CYFversion       = CYFversion;    // Current version of CYF displayed in the main menu and usable in scripts
-    public string _NS_OverworldVersion = OverworldVersion;    // Last version in which the overworld was changed, notifying any user with an old save to delete it
-    public int _NS_LTSversion       = LTSversion;          // LTS version, mainly used for CYF 0.6.6
-    public int _NS_BetaVersion      = BetaVersion;          // Only used for beta versions
-
-    public int _NS_frame = frame;                        // Frame counter used for logging purposes
-    public float _NS_overworldTimestamp = overworldTimestamp;    // Timestamp of the creation of the save file, mostly used to know the time spent in this save in the save and load screen
-
-    public IUndertaleInput _NS_input = input;              // KeyboardInput singleton, registering any key press the Player does and handling them
-    public LuaInputBinding _NS_luaInput = luaInput;    // Input Lua object, usable on the Lua side
-
-    public string _NS_realName = realName;      // Player's name in the overworld, given through the scene EnterName
-    public bool _NS_modDev = modDev;          // True if we entered the mod selection screen and not the overworld, false otherwise
-    public bool _NS_crate = crate;           // True if CrateYourFrisk mode is active, false otherwise
-    public bool _NS_retroMode = retroMode;       // True if the Unitale 0.2.1a retrocompatibility mode is active, false otherwise
-    public bool _NS_stopScreenShake = stopScreenShake; // Used to stop any screenshake currently ongoing
-    public bool _NS_isInFight = isInFight;       // True if we're in a battle, false otherwise
-    public bool _NS_isInShop = isInShop;        // True if we're in a shop, false otherwise
-    public bool _NS_allowWipeSave = allowWipeSave;   // Allows you to wipe your save in the Error scene if it couldn't load properly
-
-    public string[] _NS_nonOWScenes = nonOWScenes;   // Scenes in which you're not considered to be in the overworld
-    public string[] _NS_canTransOW = canTransOW;  // Scenes from which you can enter the overworld
-
-    public Dictionary<string, GameState.MapData> _NS_GameMapData = GameMapData;              // Main save data on each map the Player has visited before
-    public Dictionary<string, GameState.EventInfos> _NS_EventData = EventData;          // Data stored for each event in the current map, used for data saving
-    public Dictionary<string, GameState.TempMapData> _NS_TempGameMapData = TempGameMapData;  // Data used to save changes applied to maps the Player hasn't visited yet
-	
-	public static bool throwErrors = false;
-	public bool throwErrorsNS = throwErrors;
 
     public void Awake() {
         if (awakened) return;
@@ -155,33 +125,6 @@ public class GlobalControls : MonoBehaviour {
     /// Run once per frame.
     /// </summary>
     private void Update () {
-			CYFversion       = _NS_CYFversion;    // Current version of CYF displayed in the main menu and usable in scripts
-    OverworldVersion = _NS_OverworldVersion;    // Last version in which the overworld was changed, notifying any user with an old save to delete it
-    LTSversion       = _NS_LTSversion;          // LTS version, mainly used for CYF 0.6.6
-    BetaVersion      = _NS_BetaVersion;          // Only used for beta versions
-
-    frame = _NS_frame;                        // Frame counter used for logging
-    overworldTimestamp = _NS_overworldTimestamp;    // Timestamp of the creation of the save file, mostly used to know the time spent in this save in the save and load screen
-
-    input = _NS_input;              // KeyboardInput singleton, registering any key press the Player does and handling them
-    luaInput = _NS_luaInput;    // Input Lua object, usable on the Lua side
-
-    realName = _NS_realName;      // Player's name in the overworld, given through the scene EnterName
-    modDev = _NS_modDev;          // True if we entered the mod selection screen and not the overworld, false otherwise
-    crate = _NS_crate;           // True if CrateYourFrisk mode is active, false otherwise
-    retroMode = _NS_retroMode;       // True if the Unitale 0.2.1a retrocompatibility mode is active, false otherwise
-    stopScreenShake = _NS_stopScreenShake; // Used to stop any screenshake currently ongoing
-    isInFight = _NS_isInFight;       // True if we're in a battle, false otherwise
-    isInShop = _NS_isInShop;        // True if we're in a shop, false otherwise
-    allowWipeSave = _NS_allowWipeSave;   // Allows you to wipe your save in the Error scene if it couldn't load properly
-
-    nonOWScenes = _NS_nonOWScenes;   // Scenes in which you're not considered to be in the overworld
-    canTransOW = _NS_canTransOW;  // Scenes from which you can enter the overworld
-
-    GameMapData = _NS_GameMapData;              // Main save data on each map the Player has visited before
-    EventData = _NS_EventData;          // Data stored for each event in the current map, used for data saving
-    TempGameMapData = _NS_TempGameMapData;  // Data used to save changes applied to maps the Player hasn't visited yet
-	throwErrors = throwErrorsNS;
         // Update Discord RPC
         DiscordControls.Update();
 
